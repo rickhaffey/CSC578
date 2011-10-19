@@ -75,6 +75,7 @@ namespace Midterm
             output.Clear();
 
             NeuralNetwork net = new NeuralNetwork(_userInput);
+
             net.TrainingStateChanged += new NeuralNetwork.TrainingStateChangedEventHandler(net_TrainingStateChanged);
             Backpropagation.Calculate(net, _userInput);
         }
@@ -83,6 +84,7 @@ namespace Midterm
         {
             this.output.AppendText(Environment.NewLine);
             this.output.AppendText(e.TrainingState.ToString());
+            this.output.AppendText(Environment.NewLine);
         }
     }
 }

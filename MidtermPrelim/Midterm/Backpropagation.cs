@@ -9,37 +9,42 @@ namespace Midterm
     {
         public static void Calculate(NeuralNetwork neuralNetwork, UserInput userInput)
         {
+            LogHelper.WriteDebug("Backpropagation.Calculate - Enter");
             long epoch = 0;
 
             // do until the termination condition is met
-            while (++epoch <= userInput.MaxEpochs)
+            while (++epoch <= userInput.MaxEpochs && neuralNetwork.TrainingState.MaxRMSE >= userInput.ErrorMargin)
             {
+                LogHelper.WriteDebug("Starting epoch {0}", epoch);
+
                 // iterate through the training examples
                 foreach (DataInstance trainingExample in userInput.DataInstances)
                 {
-                    // 1. propagate the input forward through the network
+                    LogHelper.WriteDebug("Processing training example: {0}", trainingExample);
+
+                    // 1. 
+                    LogHelper.WriteDebug("Propagating input forward through network.");
                     neuralNetwork.InputNodes.ForEach(input => input.CalculateValue(trainingExample));
                     neuralNetwork.HiddenNodes.ForEach(hidden => hidden.CalculateValue(neuralNetwork.Weights));
                     neuralNetwork.OutputNodes.ForEach(output => output.CalculateValue(neuralNetwork.Weights));
 
                     // 2. propagate error backward through the network
-                    // for each network output unit, calc error term
+                    LogHelper.WriteDebug("Calculating output unit error values.");
                     neuralNetwork.OutputNodes.ForEach(output => output.CalculateError(trainingExample));
 
-                    // for each hidden unit, calc error term
+                    LogHelper.WriteDebug("Calculating hidden unit error values.");
                     neuralNetwork.HiddenNodes.ForEach(hidden => hidden.CalculateError(neuralNetwork.Weights));
 
-                    // update each network weight
+                    LogHelper.WriteDebug("Updating network weights.");
                     neuralNetwork.Weights.ForEach(weight => weight.CalculateValue(userInput.LearningRate));
                 }
 
                 // classify the data based on the updated weights
+                LogHelper.WriteDebug("Running classification with updated weights.");
                 neuralNetwork.TrainingState =  ClassifyData(neuralNetwork, userInput, epoch);
-
-                // check to see if the accuracy is within the user specified threshold
-                if (neuralNetwork.TrainingState.MaxRMSE < userInput.ErrorMargin)
-                    break;
             }
+            
+            LogHelper.WriteDebug("Backpropagation.Calculate - Exit");
         }
 
         private static TrainingState ClassifyData(NeuralNetwork neuralNetwork, UserInput userInput, long epoch)

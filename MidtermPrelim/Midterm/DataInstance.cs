@@ -11,6 +11,7 @@ namespace Midterm
         List<double> _attributes;
         double _class;
         private List<double> _calculatedClasses;
+        private string _csv;
 
         public List<double> Attributes { get { return _attributes; } }
         public double Class { get { return _class; } }
@@ -19,6 +20,8 @@ namespace Midterm
         public DataInstance(string csv)
         {
             Guard.IsNullOrEmpty(csv, "csv");
+
+            _csv = csv;
 
             // build up a data instance from a csv line
             string[] values = csv.Split(',');
@@ -56,6 +59,11 @@ namespace Midterm
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return _csv;
         }
     }
 }

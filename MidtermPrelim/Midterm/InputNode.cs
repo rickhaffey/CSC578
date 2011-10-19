@@ -10,21 +10,32 @@ namespace Midterm
         public InputNode(int index, double initialValue)
             : base(index, initialValue)
         {
-            SetLabel("x");
+            InitializeNode();
         }
 
         public InputNode(int index) : base(index) 
         {
+            InitializeNode();
+        }
+
+        private void InitializeNode()
+        {
             SetLabel("x");
+            LogHelper.WriteDebug("InputNode Created: {0}", _label);        
         }
 
         public void CalculateValue(DataInstance dataInstance)
         {
             // no recalculation for the x0 node
-            if (Index == 0) return;
+            if (IsThresholdUnit)
+            {
+                LogHelper.WriteDebug("Skipping Calculate() for threshold input: {0} [value:{1}]", _label, _value);
+                return; 
+            }
   
             // value of an input node is simply the attribute value from the data instance
             _value = dataInstance.Attributes[Index - 1];
+            LogHelper.WriteDebug("Calculate() for input: {0}; value: {1}", _label, _value);
         }
     }
 }

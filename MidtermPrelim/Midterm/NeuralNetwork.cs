@@ -17,7 +17,7 @@ namespace Midterm
         public List<OutputNode> OutputNodes { get { return _outputNodes; } }
         public List<Weight> Weights { get { return _weights; } }
 
-        private TrainingState _trainingState;
+        private TrainingState _trainingState = TrainingState.Default;
         public TrainingState TrainingState
         {
             get
@@ -45,10 +45,8 @@ namespace Midterm
         {
             _inputNodes = new List<InputNode>(inputNodeCount);
 
-            // add the x0 'input'
-            InputNode x0 = new InputNode(0, -1.0);
-            //x0.Value = -1; // per assignment instructions
-            _inputNodes.Add(x0);
+            // add the threshold 'input' unit
+            _inputNodes.Add(new InputNode(0, -1.0) { IsThresholdUnit = true });
 
             // add the true input nodes
             for (int i = 1; i <= inputNodeCount; i++)
@@ -61,10 +59,8 @@ namespace Midterm
         {
             _hiddenNodes = new List<HiddenNode>(hiddenNodeCount);
 
-            // add the h0 'input' for the output layer
-            HiddenNode h0 = new HiddenNode(0, -1.0);
-            //h0.Value = -1; // per assignment instructions
-            _hiddenNodes.Add(h0);
+            // add the threshold hidden node as 'input' for the output layer
+            _hiddenNodes.Add(new HiddenNode(0, -1.0) { IsThresholdUnit = true });
 
             // add the true hidden nodes
             for (int i = 1; i <= hiddenNodeCount; i++)
