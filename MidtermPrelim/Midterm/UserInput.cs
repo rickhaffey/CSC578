@@ -19,7 +19,10 @@ namespace Midterm
             set
             {
                 _dataFilePath = value;
-                _dataInstances = DataInstance.ReadFile(_dataFilePath);
+                if (!string.IsNullOrEmpty(_dataFilePath))
+                {
+                    _dataInstances = DataInstance.ReadFile(_dataFilePath);
+                }
             }
         }
         public int HiddenNodeCount { get; set; }
@@ -37,8 +40,8 @@ namespace Midterm
             {
                 return new UserInput()
                 {
-                    //DataFilePath = null,
-                    DataFilePath = @"C:\Users\Rick\Documents\My Dropbox\DePaul\CSC578\Assignments\Midterm\xor.csv",
+                    DataFilePath = null,
+                    //DataFilePath = @"C:\Users\Rick\Documents\My Dropbox\DePaul\CSC578\Assignments\Midterm\xor.csv",
                     HiddenNodeCount = 1,
                     LearningRate = 0.1,
                     ErrorMargin = 0.1,

@@ -6,20 +6,43 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Midterm
 {
     public partial class MainForm : Form
     {
         private UserInput _userInput;
+        private StreamWriter _resultsFile;
 
         public MainForm()
         {
             InitializeComponent();
+
             _userInput = UserInput.Default;
             RefreshUserInputDisplay();
 
             EnableDisable(_userInput.DataInstances != null && _userInput.DataInstances.Count > 0);
+        }
+
+        private void InitializeResultsFile()
+        {
+            const string RESULTS_FILENAME = "results.txt";
+            string resultsDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string resultsFilePath = Path.Combine(resultsDir, RESULTS_FILENAME);
+
+            try
+            {
+                _resultsFile = new StreamWriter(resultsFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    string.Format("There was an error opening the results file ('{0}').  Output will only be displayed in the user interface.\r\nError Details: {1}", 
+                    resultsFilePath, 
+                    ex));
+                _resultsFile = null;
+            }
         }
 
         private void chooseDataFile_Click(object sender, EventArgs e)
@@ -29,7 +52,7 @@ namespace Midterm
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _userInput.DataFilePath = openFileDialog.FileName;
-                RefreshUserInputDisplay();
+                dataFileLabel.Text = _userInput.DataFilePath;
 
                 EnableDisable(true);
             }
@@ -72,6 +95,8 @@ namespace Midterm
         {
             UpdateUserInputFromControls();
 
+            InitializeResultsFile();
+
             output.Clear();
 
             NeuralNetwork net = new NeuralNetwork(_userInput);
@@ -85,6 +110,21 @@ namespace Midterm
             this.output.AppendText(Environment.NewLine);
             this.output.AppendText(e.TrainingState.ToString());
             this.output.AppendText(Environment.NewLine);
+
+            try
+            {
+                if (_resultsFile != null)
+                {
+                    _resultsFile.WriteLine();
+                    _resultsFile.WriteLine(e.TrainingState.ToString());
+                    _resultsFile.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            { 
+                // failure to write to results file is not 'fatal', just note it in the log
+                LogHelper.WriteDebug("Error writing to results file: {0}", ex);
+            }
         }
     }
 }
