@@ -34,6 +34,7 @@ namespace Midterm
             try
             {
                 _resultsFile = new StreamWriter(resultsFilePath);
+                _resultsFile.AutoFlush = true;
             }
             catch (Exception ex)
             {

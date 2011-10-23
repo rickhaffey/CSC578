@@ -1,9 +1,13 @@
 NOTE:
 
-The project has the following library dependencies:
+# The solution has the following library dependencies:
+
+* Main Project:
 
 Microsoft Enterprise Library (v 5.0) [for logging]:
 	[Download] (http://www.microsoft.com/downloads/details.aspx?FamilyId=bcb166f7-dd16-448b-a152-9845760d9b4c&displaylang=en "MSEL 5.0 Download")
+
+* Test Project
 
 NUnit:
 	[Download] (http://www.nunit.org/index.php?p=download "NUnit Download")
